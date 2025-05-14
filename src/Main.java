@@ -1,54 +1,86 @@
 import model.Moneda;
+import service.ConversionService;
 import service.ExchangeRateApi;
-
-import java.util.Scanner;
+import utils.EntradaDatos;
 
 public class Main {
     public static void main(String[] args) {
+        EntradaDatos entradaDatos = new EntradaDatos();
         ExchangeRateApi exchangeRateApi = new ExchangeRateApi();
-        Scanner input = new Scanner(System.in);
+        ConversionService conversionService = new ConversionService();
+
         int optionMenu;
 
         do {
-            System.out.println("1. Dolar >> Peso Argentino");
-            System.out.println("2. Peso Argentino >> Dolar");
-            System.out.println("3. Dolar >> Real Brasileño");
-            System.out.println("4. Real Brasileño >> Dolar");
-            System.out.println("5. Dolar >> Peso Colombiano");
-            System.out.println("6. Peso Colombiano >> Dolar");
-            System.out.println("7. Salir");
+            double cantidad = 0;
+            Moneda moneda;
+            double resultado;
+            entradaDatos.mostrarMenu();
+            optionMenu = entradaDatos.opcionMenu();
 
-            optionMenu = input.nextInt();
-            System.out.println(">> Ingrese la cantidad que desea convertir");
-            double cantidad = input.nextDouble();
             switch (optionMenu) {
                 case 1:
-                    Moneda moneda = exchangeRateApi.request("USD", "ARS");
-                    double resultado = Double.parseDouble(moneda.getConversionRate()) * cantidad;
-                    System.out.println(resultado);
-
+                    cantidad = entradaDatos.cantidadAConvertir();
+                    moneda = exchangeRateApi.request("USD", "ARS");
+                    resultado = conversionService.conversion(moneda, cantidad);
+                    mensajeResultado(moneda, cantidad, resultado);
+                    optionMenu = entradaDatos.volverAEjecutar();
                     break;
                 case 2:
-                    exchangeRateApi.request("ARS", "USD");
+                    cantidad = entradaDatos.cantidadAConvertir();
+                    moneda = exchangeRateApi.request("ARS", "USD");
+                    resultado = conversionService.conversion(moneda, cantidad);
+                    mensajeResultado(moneda, cantidad, resultado);
+                    optionMenu = entradaDatos.volverAEjecutar();
                     break;
                 case 3:
-                    exchangeRateApi.request("USD", "BRL");
+                    cantidad = entradaDatos.cantidadAConvertir();
+                    moneda = exchangeRateApi.request("USD", "BRL");
+                    resultado = conversionService.conversion(moneda, cantidad);
+                    mensajeResultado(moneda, cantidad, resultado);
+                    optionMenu = entradaDatos.volverAEjecutar();
                     break;
                 case 4:
-                    exchangeRateApi.request("BRL", "USD");
+                    cantidad = entradaDatos.cantidadAConvertir();
+                    moneda = exchangeRateApi.request("BRL", "USD");
+                    resultado = conversionService.conversion(moneda, cantidad);
+                    mensajeResultado(moneda, cantidad, resultado);
+                    optionMenu = entradaDatos.volverAEjecutar();
                     break;
                 case 5:
-                    exchangeRateApi.request("USD", "COP");
+                    cantidad = entradaDatos.cantidadAConvertir();
+                    moneda = exchangeRateApi.request("USD", "COP");
+                    resultado = conversionService.conversion(moneda, cantidad);
+                    mensajeResultado(moneda, cantidad, resultado);
+                    optionMenu = entradaDatos.volverAEjecutar();
                     break;
                 case 6:
-                    exchangeRateApi.request("COP", "USD");
+                    cantidad = entradaDatos.cantidadAConvertir();
+                    moneda = exchangeRateApi.request("COP", "USD");
+                    resultado = conversionService.conversion(moneda, cantidad);
+                    mensajeResultado(moneda, cantidad, resultado);
+                    optionMenu = entradaDatos.volverAEjecutar();
+                    break;
+                case 7:
+                    break;
+                default:
+                    System.out.println("¡Intente nuevamente!");
                     break;
             }
         } while (optionMenu != 7);
 
     }
 
-    public double conversion(Moneda moneda, double cantidad) {
-        return Double.parseDouble(moneda.getConversionRate()) * cantidad;
+    /**
+     * Muestra el mensaje con el resultado de la conversión.
+     *
+     * @param moneda Objeto Moneda que contiene la información de las monedas.
+     * @param cantidad Cantidad original a convertir.
+     * @param resultado Valor final después de la conversión.
+     */
+    static void mensajeResultado(Moneda moneda, double cantidad, double resultado) {
+        System.out.println("\nEl valor de " + cantidad + " " + moneda.getBaseCode() +
+                " corresponde al valor final de >> " + resultado + " " + moneda.getTargetCode());
     }
+
 }

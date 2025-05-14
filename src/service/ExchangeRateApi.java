@@ -13,6 +13,13 @@ import java.net.http.HttpResponse;
 
 public class ExchangeRateApi {
 
+    /**
+     * Realiza una petición a la API de tasas de cambio para obtener la tasa entre dos monedas.
+     *
+     * @param baseCode   Código de la moneda base (ej: USD).
+     * @param targetCode Código de la moneda de destino (ej: EUR).
+     * @return Moneda Objeto Moneda que contiene la información de la tasa de cambio.
+     */
     public Moneda request(String baseCode, String targetCode) {
         String API_KEY = "";
         String API_URL = "https://v6.exchangerate-api.com/v6" +
@@ -28,6 +35,14 @@ public class ExchangeRateApi {
         return response(client, request);
     }
 
+    /**
+     * Envía la petición HTTP y procesa la respuesta JSON de la API.
+     *
+     * @param client  Cliente HTTP para enviar la petición.
+     * @param request Petición HTTP a enviar.
+     * @return Moneda Objeto Moneda creado a partir de la respuesta JSON.
+     * @throws RuntimeException Si ocurre un error durante la petición o el procesamiento de la respuesta.
+     */
     public Moneda response(HttpClient client, HttpRequest request) {
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -36,7 +51,7 @@ public class ExchangeRateApi {
                     .create();
             return gson.fromJson(response.body(), Moneda.class);
         } catch (IOException | InterruptedException e) {
-            throw new RuntimeException("");
+            throw new RuntimeException("Error al realizar la petición a la API");
         }
     }
 
